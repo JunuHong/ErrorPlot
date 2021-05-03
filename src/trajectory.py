@@ -4,6 +4,11 @@ import pandas as pd
 
 class Trajectory():
     def __init__(self, file_name):
+        """[summary]
+
+        Args:
+            file_name ([type]): [description]
+        """
         pose = pd.read_csv(file_name, sep=' ', names=['x1', 'x2', 'x3', 'x4', 'x5', 'x6', 'x7', 'x8', 'x9', 'x10', 'x11', 'x12'])
         self.pose = np.asarray(pose).reshape(-1, 3, 4)
         self.trajectory = self._trajectory(self.pose)
