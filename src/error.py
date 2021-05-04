@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from src.trajectory import Trajectory
+from trajectory import Trajectory
 
 class Error():
     def __init__(self, reference=None, estimate=None, delta = 1):
@@ -14,11 +14,11 @@ class Error():
             delta  (int, optional): local accuracy of the trajectory over a fixed time interval delta(for RPE). Defaults to 1
         """
         self.ape_trans, self.ape_rot = self.APE(reference, estimate)
-        self.ape_tanse_stat = self._statistics(self.ape_trans)
+        self.ape_tans_stat = self._statistics(self.ape_trans)
         self.ape_rot_stat = self._statistics(self.ape_rot)
         
         self.rpe_trans, self.rpe_rot = self.RPE(reference, estimate, delta)
-        self.rpe_tanse_stat = self._statistics(self.rpe_trans)
+        self.rpe_tans_stat = self._statistics(self.rpe_trans)
         self.rpe_rot_stat = self._statistics(self.rpe_rot)
                 
     def _rigid_transformation(self, GT, TEST):
@@ -102,14 +102,16 @@ def plotAPE(*errors):
     plt.subplot(2,1,1)
     for i in range(n_files):
         plt.plot(errors[i].ape_trans, label='APE_translation')
-        #plt.axhline(y=errors[i].ape_trans_stat['rmse'], color='r', linestyle='-', label='rmse')
-        #plt.axhline(y=errors[i].ape_trans_stat['mean'], color='b', linestyle='-', label='mean')
+        for key, value in errors[i].ape_tans_stat.items():
+            plt.axhline(y=value, color='r', linestyle='-', label=key)
     plt.xlabel('index')
     plt.ylabel('ape[m]')
 
     plt.subplot(2,1,2)
     for i in range(n_files):
         plt.plot(errors[i].ape_rot, label='APE_rotation')
+        for key, value in errors[i].ape_tans_stat.items():
+            plt.axhline(y=value, color='r', linestyle='-', label=key)
     plt.xlabel('index')
     plt.ylabel('ape[rad]')
     

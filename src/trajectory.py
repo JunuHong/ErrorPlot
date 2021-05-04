@@ -35,21 +35,21 @@ def plotXYZ(*traj):
     
     plt.figure(figsize=(10,15))
     plt.subplot(3,1,1)
-    for i in range(n_files):
+    for i in xrange(n_files):
         if (traj[i].is_gt): plt.plot(traj[i].trajectory[:,0], label=traj[i].name, ls='--')
         else: plt.plot(traj[i].trajectory[:,0], label=traj[i].name)
     plt.ylabel('x')
     plt.legend()
 
     plt.subplot(3,1,2)
-    for i in range(n_files):
+    for i in xrange(n_files):
         if (traj[i].is_gt): plt.plot(traj[i].trajectory[:,1], label=traj[i].name, ls='--')
         else: plt.plot(traj[i].trajectory[:,1], label=traj[i].name)
     plt.ylabel('y')
     plt.legend()
 
     plt.subplot(3,1,3)
-    for i in range(n_files):
+    for i in xrange(n_files):
         if (traj[i].is_gt): plt.plot(traj[i].trajectory[:,2], label=traj[i].name, ls='--')
         else: plt.plot(traj[i].trajectory[:,2], label=traj[i].name)
     plt.ylabel('z')
@@ -60,7 +60,7 @@ def plot2D(*traj):
     n_files = len(traj)
     
     plt.figure(figsize=(10,10))
-    for i in range(n_files):
+    for i in xrange(n_files):
         if (traj[i].is_gt): plt.plot(traj[i].trajectory[:,0], traj[i].trajectory[:,2], label=traj[i].name, ls='--')
         else: plt.plot(traj[i].trajectory[:,0], traj[i].trajectory[:,2], label=traj[i].name)
     plt.xlabel("x")
@@ -73,7 +73,7 @@ def plot3D(*traj):
     from mpl_toolkits.mplot3d import Axes3D
     fig = plt.figure(figsize=(10,10))
     ax = fig.add_subplot(111, projection='3d')
-    for i in range(n_files):
+    for i in xrange(n_files):
         ax.scatter(traj[i].trajectory[:,0], traj[i].trajectory[:,2], -traj[i].trajectory[:,1], 
                    label=traj[i].name)
     ax.legend()

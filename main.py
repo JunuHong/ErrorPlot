@@ -10,7 +10,7 @@ def main():
     GT = tj.Trajectory(GT)
     ORB = tj.Trajectory(ORB)
     SPTAM = tj.Trajectory(SPTAM)
-    
+        
     ORB_error = error.Error(GT, ORB)
     SPTAM_error = error.Error(GT, SPTAM)
     
