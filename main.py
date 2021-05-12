@@ -1,27 +1,29 @@
+import matplotlib.pyplot as plt
+import argparse
+import os
+import sys
+
 import src.trajectory as tj
 import src.error as error
-import matplotlib.pyplot as plt
 
-def main():
-    GT = './data/KITTI_00_gt.txt'
-    ORB = './data/KITTI_00_ORB.txt'
-    SPTAM = './data/KITTI_00_SPTAM.txt'
-
-    GT = tj.Trajectory(GT)
-    ORB = tj.Trajectory(ORB)
-    SPTAM = tj.Trajectory(SPTAM)
-        
-    ORB_error = error.Error(GT, ORB)
-    SPTAM_error = error.Error(GT, SPTAM)
-    
-    tj.plot2D(GT, ORB, SPTAM)
-    tj.plotXYZ(GT, ORB, SPTAM)
-    
-    error.plotAPE(ORB_error, SPTAM_error)    
-    
-    tj.show()
-
+def plot():
     return
 
+def main(args):
+    # parser = argparse.ArgumentParser(description='plot trajectory and various errors to be benchmarked.')
+    # parser.add_argument('file', nargs=1, help='input file path')
+    # parser.add_argument('-plot', nargs=1, help='what to plot', default='60', type=int)
+    # args = parser.parse_args()
+    
+    # print args.file[0]
+    data = ['./data/07/07.bag', './data/07/lio_sam_path.bag', './data/07/aloam_path.bag', './data/07/lego_loam_path.bag']
+    
+    tj_list = []
+    for file in data:    
+        tj_list.append(tj.Trajectory(file))
+    
+    for traj in tj_list:
+        print traj.name
+
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1:])
