@@ -13,11 +13,12 @@ class Trajectory():
         
         if (file_name.endswith('.txt') or file_name.endswith('.csv')):
             pose = pd.read_csv(file_name, sep=' ', names=['x1', 'x2', 'x3', 'x4', 'x5', 'x6', 'x7', 'x8', 'x9', 'x10', 'x11', 'x12'])
-            self.name = file_name.split('/')[2].split('.')[0].split('_')[2]
+            name = file_name.split('/')[2].split('.')[0].split('_')[2]
+            time = None
+            length = pose.shape[0]
         elif(file_name.endswith('.bag')):
             with rosbag.Bag(file_name) as bag:
-                pose, name = self._gen_pose(bag)
-            self.name = name
+                pose, name, time, length = self._gen_pose(bag)
         else:
             print("unsupported type of data file")
             return
@@ -25,7 +26,11 @@ class Trajectory():
         self.pose = np.asarray(pose).reshape(-1, 3, 4) 
         self.trajectory = self._trajectory(self.pose)
         
-        if(self.name == 'gt'): self.is_gt = True
+        self.name = name
+        self.time_stamp = time
+        self.length = length
+        
+        if(self.name == 'gt' or self.name == 'ground_truth'): self.is_gt = True
         else: self.is_gt = False
         
     def _trajectory(self, x):
@@ -54,6 +59,7 @@ class Trajectory():
 
     def _gen_pose(self, bag):
         pose = []
+        time = []
         for topic, msg, _ in bag.read_messages():
             poses = msg.poses
         for msg in poses:
@@ -66,11 +72,17 @@ class Trajectory():
                                            msg.pose.orientation.z, 
                                            msg.pose.orientation.w])
             pose.append(np.hstack([R, t]).reshape(3, 4))
-        print topic, bag.get_message_count()
-        return pose, topic
+            time.append(msg.header.stamp)
+        return pose, topic, time, bag.get_message_count()
         
 def plotXYZ(*traj):
     n_files = len(traj)
+    g = 0
+    for k in range(n_files):
+        if (traj[k].is_gt): g = k
+        if (int(np.around(float(traj[g].length)/float(traj[k].length))) > 1):
+            for j in range(traj[k].length-1):
+                traj[k].trajectory = np.insert(traj[k].trajectory, 2*j+1, (traj[k].trajectory[2*j]+traj[k].trajectory[2*j+1])/2, axis=0)
     
     plt.figure(figsize=(10,15))
     plt.subplot(3,1,1)
@@ -95,16 +107,24 @@ def plotXYZ(*traj):
     plt.xlabel('index')
     plt.legend()
 
-def plot2D(*traj):
+def plot2D(option, *traj):
     n_files = len(traj)
     
     plt.figure(figsize=(10,10))
-    for i in xrange(n_files):
-        if (traj[i].is_gt): plt.plot(traj[i].trajectory[:,0], traj[i].trajectory[:,2], label=traj[i].name, ls='--')
-        else: plt.plot(traj[i].trajectory[:,0], traj[i].trajectory[:,2], label=traj[i].name)
-    plt.xlabel("x")
-    plt.ylabel("z")
-    plt.legend()
+    if (option == 'xy'):
+        for i in xrange(n_files):
+            if (traj[i].is_gt): plt.plot(traj[i].trajectory[:,0], traj[i].trajectory[:,1], label=traj[i].name, ls='--')
+            else: plt.plot(traj[i].trajectory[:,0], traj[i].trajectory[:,1], label=traj[i].name)
+        plt.xlabel("x")
+        plt.ylabel("y")
+        plt.legend()
+    if (option == 'xz'):
+        for i in xrange(n_files):
+            if (traj[i].is_gt): plt.plot(traj[i].trajectory[:,0], traj[i].trajectory[:,2], label=traj[i].name, ls='--')
+            else: plt.plot(traj[i].trajectory[:,0], traj[i].trajectory[:,2], label=traj[i].name)
+        plt.xlabel("x")
+        plt.ylabel("z")
+        plt.legend()
     
 def plot3D(*traj):
     n_files = len(traj)
@@ -119,6 +139,3 @@ def plot3D(*traj):
     ax.set_xlabel('x')
     ax.set_ylabel('z')
     ax.set_zlabel('-y')
-    
-def show():
-    plt.show()
