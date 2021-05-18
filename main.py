@@ -35,13 +35,13 @@ def main(args):
     
     # tj.plotXYZ(gt, aloam, lego_loam, lio_sam)
     # tj.plot2D('xy', gt, aloam, lego_loam, lio_sam)
-    # tj.plot3D(gt, aloam, lego_loam, lio_sam)
+    tj.plot3D(gt, aloam, lego_loam, lio_sam)
     
-    error_aloam = error.Error(gt, aloam)
-    error_lego = error.Error(gt, lego_loam)
-    error_lio = error.Error(gt, lio_sam)
+    # error_aloam = error.Error(gt, aloam)
+    # error_lego = error.Error(gt, lego_loam)
+    # error_lio = error.Error(gt, lio_sam)
     
-    error.plotRPE(error_aloam, error_lego, error_lio)
+    # error.plotRPE(error_aloam, error_lego, error_lio)
     plt.show()
         
 if __name__ == '__main__':

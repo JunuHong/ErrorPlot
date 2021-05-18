@@ -133,9 +133,10 @@ def plot3D(*traj):
     fig = plt.figure(figsize=(10,10))
     ax = fig.add_subplot(111, projection='3d')
     for i in xrange(n_files):
-        ax.scatter(traj[i].trajectory[:,0], traj[i].trajectory[:,2], -traj[i].trajectory[:,1], 
+        ax.scatter(traj[i].trajectory[:,0], traj[i].trajectory[:,1], traj[i].trajectory[:,2], 
                    label=traj[i].name)
     ax.legend()
+    ax.set_zlim3d(-40, 40)
     ax.set_xlabel('x')
-    ax.set_ylabel('z')
-    ax.set_zlabel('-y')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
