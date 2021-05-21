@@ -10,6 +10,7 @@ def plot():
     return
 
 def main(args):
+    #TODO : argument parser for user input/ think what and how to get settings input/
     # parser = argparse.ArgumentParser(description='plot trajectory and various errors to be benchmarked.')
     # parser.add_argument('file', nargs=1, help='input file path')
     # parser.add_argument('-plot', nargs=1, help='what to plot', default='60', type=int)
@@ -22,7 +23,7 @@ def main(args):
     # tj_list = []
     # for file in data:    
     #     tj_list.append(tj.Trajectory(file))
-    
+     
     # error_list = []
     # for i in xrange(len(tj_list)):
     #     if(tj_list[i].is_gt):
@@ -35,13 +36,14 @@ def main(args):
     
     # tj.plotXYZ(gt, aloam, lego_loam, lio_sam)
     # tj.plot2D('xy', gt, aloam, lego_loam, lio_sam)
-    tj.plot3D(gt, aloam, lego_loam, lio_sam)
+    # tj.plot3D(gt, aloam, lego_loam, lio_sam)
     
-    # error_aloam = error.Error(gt, aloam)
-    # error_lego = error.Error(gt, lego_loam)
-    # error_lio = error.Error(gt, lio_sam)
+    error_aloam = error.Error(gt, aloam)
+    error_lego = error.Error(gt, lego_loam)
+    error_lio = error.Error(gt, lio_sam)
     
-    # error.plotRPE(error_aloam, error_lego, error_lio)
+    error.plotAPE(error_aloam, error_lego, error_lio)
+    error.plotRPE(error_aloam, error_lego, error_lio)
     plt.show()
         
 if __name__ == '__main__':
