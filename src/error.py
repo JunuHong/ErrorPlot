@@ -29,7 +29,7 @@ class Error():
         self.rpe_tans_stat = self._statistics(self.rpe_trans)
         self.rpe_rot_stat = self._statistics(self.rpe_rot)
     
-    def _post_process(self, GT, TEST): #TODO
+    def _post_process(self, GT, TEST): 
         if (GT.length == TEST.length): return GT, TEST
         m = int(np.around(float(GT.length)/float(TEST.length)))
         if (m > 1):
@@ -82,6 +82,7 @@ class Error():
 
         U,_,V = np.linalg.svd(W,full_matrices=True,compute_uv=True)
         
+        #TODO check for posible bug/ when calculating lio_sam
         R = np.dot(U, V)
         t = target_mean - np.dot(R, estimate_mean)
         T = np.vstack([np.hstack([R, t.reshape(3,1)]), np.array([0,0,0,1])])
