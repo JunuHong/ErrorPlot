@@ -72,39 +72,33 @@ class Trajectory():
                                            msg.pose.orientation.z, 
                                            msg.pose.orientation.w])
             pose.append(np.hstack([R, t]).reshape(3, 4))
-            time.append(msg.header.stamp-poses[0].header.stamp)
+            time.append((msg.header.stamp-poses[0].header.stamp).to_nsec())
         return pose, topic, time, bag.get_message_count()
         
 def plotXYZ(*traj):
     n_files = len(traj)
-    g = 0
-    for k in range(n_files):
-        if (traj[k].is_gt): g = k
-        if (int(np.around(float(traj[g].length)/float(traj[k].length))) > 1):
-            for j in range(traj[k].length-1):
-                traj[k].trajectory = np.insert(traj[k].trajectory, 2*j+1, (traj[k].trajectory[2*j]+traj[k].trajectory[2*j+1])/2, axis=0)
-    
+        
     plt.figure(figsize=(10,15))
     plt.subplot(3,1,1)
     for i in range(n_files):
-        if (traj[i].is_gt): plt.plot(traj[i].trajectory[:,0], label=traj[i].name, ls='--')
-        else: plt.plot(traj[i].trajectory[:,0], label=traj[i].name)
+        if (traj[i].is_gt): plt.plot(traj[i].time, traj[i].trajectory[:,0], label=traj[i].name, ls='--')
+        else: plt.plot(traj[i].time, traj[i].trajectory[:,0], label=traj[i].name)
     plt.ylabel('x')
     plt.legend()
 
     plt.subplot(3,1,2)
     for i in range(n_files):
-        if (traj[i].is_gt): plt.plot(traj[i].trajectory[:,1], label=traj[i].name, ls='--')
-        else: plt.plot(traj[i].trajectory[:,1], label=traj[i].name)
+        if (traj[i].is_gt): plt.plot(traj[i].time, traj[i].trajectory[:,1], label=traj[i].name, ls='--')
+        else: plt.plot(traj[i].time, traj[i].trajectory[:,1], label=traj[i].name)
     plt.ylabel('y')
     plt.legend()
 
     plt.subplot(3,1,3)
     for i in range(n_files):
-        if (traj[i].is_gt): plt.plot(traj[i].trajectory[:,2], label=traj[i].name, ls='--')
-        else: plt.plot(traj[i].trajectory[:,2], label=traj[i].name)
+        if (traj[i].is_gt): plt.plot(traj[i].time, traj[i].trajectory[:,2], label=traj[i].name, ls='--')
+        else: plt.plot(traj[i].time, traj[i].trajectory[:,2], label=traj[i].name)
     plt.ylabel('z')
-    plt.xlabel('index')
+    plt.xlabel('time[nano_sec]')
     plt.legend()
 
 def plot2D(option, *traj):

@@ -19,7 +19,7 @@ class Error():
         self.is_short = False
         
         self.reference, self.estimate = self._post_process(copy.deepcopy(reference), copy.deepcopy(estimate))
-        self.time = [time.to_nsec() for time in self.estimate.time]
+        self.time = self.estimate.time
         
         self.ape_trans, self.ape_rot = self.APE(self.reference, self.estimate)
         self.ape_tans_stat = self._statistics(self.ape_trans)
@@ -38,7 +38,7 @@ class Error():
         index = []
         for i in range(GT.length):
             for j in range(TEST.length):
-                if ((GT.time[i]-TEST.time[j])>genpy.Duration(-0.01) and (GT.time[i]-TEST.time[j])<genpy.Duration(0.01)):
+                if ((GT.time[i]-TEST.time[j])>-10000000 and (GT.time[i]-TEST.time[j])<10000000):
                     index.append([i,j])
                     break
         index = np.array(index)
@@ -69,8 +69,7 @@ class Error():
                 "min"    : minimum, 
                 "max"    : maximum, 
                 "rmse"   : rmse}
-        
-        
+           
     def APE(self, GT, TEST):
         target_mean = GT.trajectory.mean(0)
         estimate_mean = TEST.trajectory.mean(0)

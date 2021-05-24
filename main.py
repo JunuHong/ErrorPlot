@@ -36,8 +36,8 @@ def main(args):
     lio_sam = tj.Trajectory(data[3])
     
     tj.plotXYZ(gt, aloam, lego_loam, lio_sam)
-    tj.plot2D('xy', gt, aloam, lego_loam, lio_sam)
-    tj.plot3D(gt, aloam, lego_loam, lio_sam)
+    # tj.plot2D('xy', gt, aloam, lego_loam, lio_sam)
+    # tj.plot3D(gt, aloam, lego_loam, lio_sam)
     
     error_aloam = error.Error(gt, aloam)
     error_lego = error.Error(gt, lego_loam)
