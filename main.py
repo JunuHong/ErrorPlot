@@ -6,46 +6,49 @@ import sys
 import src.trajectory as tj
 import src.error as error
 
-def plot():
-    return
+def traj_process(data_files):
+    tj_list = []
+    gt = None
+    for file in data_files:
+        trajectory = tj.Trajectory(file)
+        if(not trajectory.is_gt):
+            tj_list.append(trajectory)
+        else: gt = trajectory
+    return gt, tj_list
+
+def error_process(gt, tj_list):
+    error_list = []
+    if(gt == None):
+        print('Need ground truth for error calculation.')
+        return
+    for tj in tj_list:
+        error_list.append(error.Error(gt, tj))
+    return error_list
+
+def plot(plot_arg, gt, tj_list, error_list):
+    if (plot_arg == 'all'):
+        tj.plotXYZ(gt, tj_list)
+        tj.plot2D('xy', gt, tj_list)
+        tj.plot3D(gt, tj_list)
+    
+        error.plotAPE(error_list)
+        error.plotRPE(error_list)
+    return plt.show()
 
 def main(args):
     #TODO : argument parser for user input/ think what and how to get settings input/
     # parser = argparse.ArgumentParser(description='plot trajectory and various errors to be benchmarked.')
-    # parser.add_argument('file', nargs=1, help='input file path')
-    # parser.add_argument('-plot', nargs=1, help='what to plot', default='60', type=int)
+    # parser.add_argument('-plot', help='plot every available chart')
+    # parser.add_argument('-file',required=True, help='input file path')
     # args = parser.parse_args()
     
-    # print args.file[0]
-    data = ['./data/07/07.bag', './data/07/aloam_path.bag', 
-            './data/07/lego_loam_path.bag', './data/07/lio_sam_path.bag']
+    # print (args.file)
+    data = ['./data/07/07.bag', './data/07/aloam_path.bag', './data/07/lego_loam_path.bag', './data/07/lio_sam_path.bag']
+    plot_arg = 'all'
+    gt, tj_list = traj_process(data)
+    error_list = error_process(gt, tj_list)
     
-    # tj_list = []
-    # for file in data:    
-    #     tj_list.append(tj.Trajectory(file))
-     
-    # error_list = []
-    # for i in xrange(len(tj_list)):
-    #     if(tj_list[i].is_gt):
-    #         gt = tj_list.pop(i)
-    # print tj_list
-    
-    gt = tj.Trajectory(data[0])
-    aloam = tj.Trajectory(data[1])
-    lego_loam = tj.Trajectory(data[2])
-    lio_sam = tj.Trajectory(data[3])
-    
-    tj.plotXYZ(gt, aloam, lego_loam, lio_sam)
-    # tj.plot2D('xy', gt, aloam, lego_loam, lio_sam)
-    # tj.plot3D(gt, aloam, lego_loam, lio_sam)
-    
-    error_aloam = error.Error(gt, aloam)
-    error_lego = error.Error(gt, lego_loam)
-    error_lio = error.Error(gt, lio_sam)
-    
-    error.plotAPE(error_aloam, error_lego, error_lio)
-    error.plotRPE(error_aloam, error_lego, error_lio)
-    plt.show()
+    plot(plot_arg, gt, tj_list, error_list)
         
 if __name__ == '__main__':
     main(sys.argv[1:])

@@ -16,6 +16,7 @@ class Error():
             delta  (int, optional): local accuracy of the trajectory over a fixed time interval delta(for RPE). Defaults to 1
         """
         self.name = estimate.name
+        print("Calculating {}'s Error with respect to Ground Truth Data".format(self.name))
         self.is_short = False
         
         self.reference, self.estimate = self._post_process(copy.deepcopy(reference), copy.deepcopy(estimate))
@@ -114,7 +115,7 @@ class Error():
             rpe_rot.append(np.arccos((np.trace(E[:3,:3])-1)/2))
         return rpe_trans, rpe_rot
    
-def plotAPE(*errors):
+def plotAPE(errors):
     n_files = len(errors)
     plt.figure(figsize=(10,10))
     plt.subplot(2,1,1)
@@ -135,7 +136,7 @@ def plotAPE(*errors):
     plt.xlabel('time[nano_sec]')
     plt.ylabel('ape[rad]')
     
-def plotRPE(*errors):
+def plotRPE(errors):
     n_files = len(errors)
     
     plt.figure(figsize=(10,10))
