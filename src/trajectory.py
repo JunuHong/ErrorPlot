@@ -30,8 +30,8 @@ class Trajectory():
         self.name = name
         self.length = length
         
+        self.is_gt = False
         if(self.name == 'gt' or self.name == 'ground_truth'): self.is_gt = True
-        else: self.is_gt = False
         
         print("{} with length {}".format(self.name, self.length))
         
@@ -77,60 +77,54 @@ class Trajectory():
             time.append((msg.header.stamp-poses[0].header.stamp).to_nsec())
         return pose, topic, time, bag.get_message_count()
         
-def plotXYZ(gt, traj):
-    n_files = len(traj)
-        
+def plotXYZ(gt, trajs):   
     plt.figure(figsize=(10,15))
     plt.subplot(3,1,1)
     if (gt): plt.plot(gt.time, gt.trajectory[:,0], label=gt.name, ls='--')
-    for i in range(n_files):
-        plt.plot(traj[i].time, traj[i].trajectory[:,0], label=traj[i].name)
+    for traj in trajs:
+        plt.plot(traj.time, traj.trajectory[:,0], label=traj.name)
     plt.ylabel('x')
     plt.legend()
 
     plt.subplot(3,1,2)
     if (gt): plt.plot(gt.time, gt.trajectory[:,1], label=gt.name, ls='--')
-    for i in range(n_files):
-        plt.plot(traj[i].time, traj[i].trajectory[:,1], label=traj[i].name)
+    for traj in trajs:
+        plt.plot(traj.time, traj.trajectory[:,1], label=traj.name)
     plt.ylabel('y')
     plt.legend()
 
     plt.subplot(3,1,3)
     if (gt): plt.plot(gt.time, gt.trajectory[:,2], label=gt.name, ls='--')
-    for i in range(n_files):
-        plt.plot(traj[i].time, traj[i].trajectory[:,2], label=traj[i].name)
+    for traj in trajs:
+        plt.plot(traj.time, traj.trajectory[:,2], label=traj.name)
     plt.ylabel('z')
     plt.xlabel('time[nano_sec]')
     plt.legend()
 
-def plot2D(option, gt, traj):
-    n_files = len(traj)
-    
+def plot2D(option, gt, trajs):
     plt.figure(figsize=(10,10))
     if (option == 'xy'):
         if (gt): plt.plot(gt.trajectory[:,0], gt.trajectory[:,1], label=gt.name, ls='--')
-        for i in range(n_files):
-            plt.plot(traj[i].trajectory[:,0], traj[i].trajectory[:,1], label=traj[i].name)
+        for traj in trajs:
+            plt.plot(traj.trajectory[:,0], traj.trajectory[:,1], label=traj.name)
         plt.xlabel("x")
         plt.ylabel("y")
         plt.legend()
     if (option == 'xz'):
         if (gt): plt.plot(gt.trajectory[:,0], gt.trajectory[:,2], label=gt.name, ls='--')
-        for i in range(n_files):
-            plt.plot(traj[i].trajectory[:,0], traj[i].trajectory[:,2], label=traj[i].name)
+        for traj in trajs:
+            plt.plot(traj.trajectory[:,0], traj.trajectory[:,2], label=traj.name)
         plt.xlabel("x")
         plt.ylabel("z")
         plt.legend()
     
-def plot3D(gt, traj):
-    n_files = len(traj)
-    
+def plot3D(gt, trajs):
     from mpl_toolkits.mplot3d import Axes3D
     fig = plt.figure(figsize=(10,10))
     ax = fig.add_subplot(111, projection='3d')
     if(gt): ax.scatter(gt.trajectory[:,0], gt.trajectory[:,1], gt.trajectory[:,2], label=gt.name)
-    for i in range(n_files):
-        ax.scatter(traj[i].trajectory[:,0], traj[i].trajectory[:,1], traj[i].trajectory[:,2], label=traj[i].name)
+    for traj in trajs:
+        ax.scatter(traj.trajectory[:,0], traj.trajectory[:,1], traj.trajectory[:,2], label=traj.name)
     ax.legend()
     ax.set_zlim3d(-40, 40)
     ax.set_xlabel('x')

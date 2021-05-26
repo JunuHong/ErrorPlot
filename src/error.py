@@ -1,3 +1,4 @@
+from operator import index
 import numpy as np
 import matplotlib.pyplot as plt
 import copy
@@ -64,12 +65,7 @@ class Error():
         maximum = np.max(error)
         rmse = np.sqrt((np.asarray(error)**2).mean())
         
-        return {"mean"   : mean, 
-                "std"    : std, 
-                "median" : median, 
-                "min"    : minimum, 
-                "max"    : maximum, 
-                "rmse"   : rmse}
+        return [mean,std,median,minimum,maximum,rmse]
            
     def APE(self, GT, TEST):
         target_mean = GT.trajectory.mean(0)
@@ -116,11 +112,10 @@ class Error():
         return rpe_trans, rpe_rot
    
 def plotAPE(errors):
-    n_files = len(errors)
     plt.figure(figsize=(10,10))
     plt.subplot(2,1,1)
-    for i in range(n_files):
-        plt.plot(errors[i].time, errors[i].ape_trans, label=errors[i].name)
+    for error in errors:
+        plt.plot(error.time, error.ape_trans, label=error.name)
         # for key, value in errors[i].ape_tans_stat.items():
         #     plt.axhline(y=value, color='r', linestyle='-', label=key)
     plt.legend()
@@ -128,8 +123,8 @@ def plotAPE(errors):
     plt.ylabel('ape[m]')
 
     plt.subplot(2,1,2)
-    for i in range(n_files):
-        plt.plot(errors[i].time, errors[i].ape_rot, label=errors[i].name)
+    for error in errors:
+        plt.plot(error.time, error.ape_rot, label=error.name)
         # for key, value in errors[i].ape_tans_stat.items():
         #     plt.axhline(y=value, color='r', linestyle='-', label=key)
     plt.legend()
@@ -137,19 +132,55 @@ def plotAPE(errors):
     plt.ylabel('ape[rad]')
     
 def plotRPE(errors):
-    n_files = len(errors)
-    
     plt.figure(figsize=(10,10))
     plt.subplot(2,1,1)
-    for i in range(n_files):
-        plt.plot(errors[i].time[1:], errors[i].rpe_trans, label=errors[i].name)
+    for error in errors:
+        plt.plot(error.time[1:], error.rpe_trans, label=error.name)
     plt.legend()
     plt.xlabel('time[nano_sec]')
     plt.ylabel('rpe[m]')
 
     plt.subplot(2,1,2)
-    for i in range(n_files):
-        plt.plot(errors[i].time[1:], errors[i].rpe_rot, label=errors[i].name)
+    for error in errors:
+        plt.plot(error.time[1:], error.rpe_rot, label=error.name)
     plt.legend()
     plt.xlabel('time[nano_sec]')
     plt.ylabel('rpe[rad]')
+    
+def plotAPEStats(errors):
+    import pandas as pd
+    index = ['mean','std','median','minimum','maximum','rmse']
+    trans_dic = {}
+    rot_dic = {}
+    for error in errors:
+        trans_dic[error.name] = error.ape_tans_stat
+        rot_dic[error.name] = error.ape_rot_stat
+    trans_data = pd.DataFrame(trans_dic, index=index)
+    rot_data = pd.DataFrame(rot_dic, index=index)
+    fig = plt.figure(figsize=(10,10))
+    
+    ax = fig.add_subplot(2,1,1)
+    ax.title.set_text('APE Translation')
+    trans_data.plot.bar(ax=ax)
+    ax = fig.add_subplot(2,1,2)
+    ax.title.set_text('APE Rotation')
+    rot_data.plot.bar(ax=ax)
+    
+def plotRPEStats(errors):
+    import pandas as pd
+    index = ['mean','std','median','minimum','maximum','rmse']
+    trans_dic = {}
+    rot_dic = {}
+    for error in errors:
+        trans_dic[error.name] = error.rpe_tans_stat
+        rot_dic[error.name] = error.rpe_rot_stat
+    trans_data = pd.DataFrame(trans_dic, index=index)
+    rot_data = pd.DataFrame(rot_dic, index=index)
+    
+    fig = plt.figure(figsize=(10,10))
+    ax = fig.add_subplot(2,1,1)
+    ax.title.set_text('RPE Translation')
+    trans_data.plot.bar(ax=ax)
+    ax = fig.add_subplot(2,1,2)
+    ax.title.set_text('RPE Rotation')
+    rot_data.plot.bar(ax=ax)
