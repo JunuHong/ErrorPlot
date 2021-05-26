@@ -68,17 +68,17 @@ def plot(plot_arg, file_list):
     
 def main(arg):
     #TODO : argument parser for user input/ think what and how to get settings input/ ==> what to plot and how to get the input.
-    
     parser = argparse.ArgumentParser(description='plot trajectory and various errors to be benchmarked.')
     parser.add_argument('-p','--plot', choices=['all', 'traj', 'error', 'stat'], default='all', help='plot chart')
     parser.add_argument('--plot_mode', choices=['xy', 'xz', '3D', 'xyz'], default='all', help='plot chart')
     parser.add_argument('-F', '--folder', help='input file directory')
     parser.add_argument('-f', '--file', action='append', nargs='+',  help='input files')
     args = parser.parse_args()
+    
     if len(arg) == 0:
         parser.print_help()
         sys.exit(0)
-
+    
     if args.folder:
         file_list = []
         workDIr = os.path.abspath(args.folder)
@@ -89,7 +89,6 @@ def main(arg):
         file_list = args.file[0]
     
     plot_arg = args.plot
-    
     plot(plot_arg, file_list)
     
 if __name__ == '__main__':
