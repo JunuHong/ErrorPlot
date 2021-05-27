@@ -10,11 +10,12 @@ def traj_process(data_files):
     tj_list = []
     gt = None
     for file in data_files:
-        trajectory = tj.Trajectory(file)
-        if(trajectory):   
+        if (file.endswith('.bag') or file.endswith('.txt')):
+            trajectory = tj.Trajectory(file)
             if(not trajectory.is_gt):
                 tj_list.append(trajectory)
             else: gt = trajectory
+        else: print("Unsupported .{} file type".format(file.split('.')[-1]))
     return gt, tj_list
 
 def error_process(gt, tj_list):

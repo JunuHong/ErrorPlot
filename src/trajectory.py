@@ -19,9 +19,6 @@ class Trajectory():
         elif(file_name.endswith('.bag')):
             with rosbag.Bag(file_name) as bag:
                 pose, name, time_dur, length = self._gen_pose(bag)
-        else:
-            print("unsupported type of data file")
-            return None
         
         self.pose = np.asarray(pose).reshape(-1, 3, 4) 
         self.trajectory = self._trajectory(self.pose)
