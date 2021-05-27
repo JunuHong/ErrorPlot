@@ -10,7 +10,8 @@ def traj_process(data_files):
     tj_list = []
     gt = None
     for file in data_files:
-        trajectory = tj.Trajectory(file)
+        if(not file):
+            trajectory = tj.Trajectory(file)
         if(not trajectory.is_gt):
             tj_list.append(trajectory)
         else: gt = trajectory
@@ -78,7 +79,7 @@ def main(arg):
     if len(arg) == 0:
         parser.print_help()
         sys.exit(0)
-    
+
     if args.folder:
         file_list = []
         workDIr = os.path.abspath(args.folder)
