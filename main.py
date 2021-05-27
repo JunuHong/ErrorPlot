@@ -10,11 +10,11 @@ def traj_process(data_files):
     tj_list = []
     gt = None
     for file in data_files:
-        if(not file):
-            trajectory = tj.Trajectory(file)
-        if(not trajectory.is_gt):
-            tj_list.append(trajectory)
-        else: gt = trajectory
+        trajectory = tj.Trajectory(file)
+        if(trajectory):   
+            if(not trajectory.is_gt):
+                tj_list.append(trajectory)
+            else: gt = trajectory
     return gt, tj_list
 
 def error_process(gt, tj_list):

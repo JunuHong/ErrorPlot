@@ -21,7 +21,7 @@ class Trajectory():
                 pose, name, time_dur, length = self._gen_pose(bag)
         else:
             print("unsupported type of data file")
-            return
+            return None
         
         self.pose = np.asarray(pose).reshape(-1, 3, 4) 
         self.trajectory = self._trajectory(self.pose)
