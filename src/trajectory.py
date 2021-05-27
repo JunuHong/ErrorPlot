@@ -16,9 +16,14 @@ class Trajectory():
             name = file_name.split('/')[2].split('.')[0].split('_')[2]
             time = None
             length = pose.shape[0]
+            self.is_None = False
         elif(file_name.endswith('.bag')):
             with rosbag.Bag(file_name) as bag:
                 pose, name, time_dur, length = self._gen_pose(bag)
+                self.is_None = False
+        else:
+            print("unsupported type of data file")
+            self.is_None = True
         
         self.pose = np.asarray(pose).reshape(-1, 3, 4) 
         self.trajectory = self._trajectory(self.pose)
@@ -28,7 +33,7 @@ class Trajectory():
         self.length = length
         
         self.is_gt = False
-        if(self.name == 'gt' or self.name == 'ground_truth'): self.is_gt = True
+        if(self.name == 'gt' or self.name == 'ground_truth' or self.name == '/ground_truth'): self.is_gt = True
         
         print("{} with length {}".format(self.name, self.length))
         

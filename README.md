@@ -25,5 +25,5 @@ $ python main.py -f ./data/07/07.bag ./data/07/lio_sam_path.bag
 
 using `-F/--folder` to plot every file inside folder
 ```bash
-$ python main.py -p ./data/07
+$ python main.py -F ./data/07
 ```
